@@ -1,0 +1,40 @@
+<% layout('./layouts/layout.eta') %>
+
+<h1>Question: <%= it.qText %></h1>
+
+<% if (it.answerOptions.length === 0) { %>
+  <form method="POST" action="/topics/<%= it.tId %>/questions/<%= it.qId %>/delete">
+    <input type="submit" value="Delete question" />
+  </form>
+<% } %>
+
+<h2>Add answer option</h2>
+
+<% if (it.validationErrors) { %>
+<ul>
+    <% Object.keys(it.validationErrors).forEach((attribute) => { %>
+        <% Object.values(it.validationErrors[attribute]).forEach((err) => { %>
+            <li><%= err %></li>
+        <% }); %>
+    <% }); %>
+</ul>
+<% } %>
+
+<form method="POST" action="/topics/<%= it.tId %>/questions/<%= it.qId %>/options">
+  Answer option text: <input type="text" name="option_text" />
+  Correct: <input type="checkbox" name="is_correct">
+  <input type="submit" value="Add answer option" />
+</form>
+
+<h2>Answer option list</h2>
+
+<ul>
+<% it.answerOptions.forEach((op) => { %>
+  <li>
+    <%= op.option_text %> (<%= op.is_correct %>)
+    <form method="POST" action="/topics/<%= it.tId %>/questions/<%= it.qId %>/options/<%= op.id %>/delete">
+      <input type="submit" value="Delete" />
+    </form>
+  </li>
+<% }); %>
+</ul>
